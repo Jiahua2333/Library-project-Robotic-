@@ -19,15 +19,19 @@ script will use the Create2 to play a familiar melody.
 
 Files explaination:
 1. IRobotProcessing.py
+
   This program simplifies some robot's functions from the "_init_.py" file and adds some news functions for 
   the for the iRobot Create2, such as getDistanceAngle(), getEncoder(), lineFollowing().
 
 2. LibraryProject.py
+
   This class is about some openCV image processing. Also, The main function is in this class.
   Run it for the whole project.
 
 3. Colltrolling.py
+
   This program uses keyboard to control the robot move.
+  
   Attention: when the panel appears on the screen, it must click inside
               one time first(that is nothing), then, it can use the keyboard 
               control the robot.
