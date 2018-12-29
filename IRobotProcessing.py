@@ -13,32 +13,37 @@ class IRobotProcessing():
     def __init__(self):
         self.__vr = 0
         self.__vl = 0
-        self.bot = Robot()
+        self.bot = Robot() # Open the robot
 
     def setVR(self, vr):
-        self.__vr = vr
+        self.__vr = vr     # Setup the speed of right wheel
 
     def setVL(self, vl):
-        self.__vl = vl
+        self.__vl = vl     # Setup the speed of left wheel
 
     def getVR(self):
         return self.__vr
 
     def getVL(self):
         return self.__vl
-
-    def run(self):
+    
+    # Let the robot move by this class data
+    def run(self):          
         self.bot.setWheelSpeed(self.__vr, self.__vl)
 
+    # Let the robot move by the other class argument
     def move(self, vr, vl):
         self.bot.setWheelSpeed(vr, vl)
 
+    # Turn off the wheel motors.
     def stop(self):
         self.bot.setWheelSpeed(0, 0)
 
+    # Turn off the robot
     def close(self):
         self.bot.close()
 
+    # reset all the internal data of the robot.
     def reset(self):
         self.bot.reset()
 
@@ -49,6 +54,11 @@ class IRobotProcessing():
         # right_distance = difference_right / 508.8 * np.pi * 72
         # left_distance = difference_left / 508.8 * np.pi * 72
 
+        
+        # Formula for iRobot Create2:
+        # Distance: (current encoder - pre encodeer) / 508.8 * pi * 72
+        # Angle: (right distance - left ddstance)/ 235.0
+        # Note: When the encoder counted to 65536 (2^16), the encoder will count back to O
         if difference_right > 60000:
             right_distance = ((right_encoder - 65536) - pre_right_encoder) / 508.8 * np.pi * 72
         elif difference_right < -60000:
@@ -86,6 +96,12 @@ class IRobotProcessing():
         return right_encoder, left_encoder
 
     def lineFollowing(self, status, expectation_distance, pre_cx, cx, rotation_direction, small_distance, angle):
+        # status: check whether there are horizontal lines in images and the robot close to the node(corner). 1 means both of them are ture.
+        # expectation_distance: The distance the robot need to move when close the the node.
+        # pre_cx: the pre center of the contour
+        # cx: the current center of the contour
+        # small_distance: use to compare with the expectation_distance
+        
         if status == 1:
             if small_distance < expectation_distance:
                 self.setVR(15)
