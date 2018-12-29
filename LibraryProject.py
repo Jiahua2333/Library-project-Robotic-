@@ -21,18 +21,22 @@ class OpenCVProcessing():
     def getIMG(self):
         return self.img
 
+    # Transfer color image to gray iamge
     def toGraySclace(self, img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         return gray
 
+    # Smoothing Images
     def blurProcess(self, gray):
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
         return blur
 
+    # Canny edge detection
     def getCanny(sel, blur):
         edges = cv2.Canny(blur, 50, 100, apertureSize=3)
         return edges
 
+    # Find boundaries
     def getContours(self, blur_image):
         # blur = self.blurProcess()
         ret, thresh = cv2.threshold(blur_image, 10, 255, cv2.THRESH_BINARY)
@@ -42,14 +46,15 @@ class OpenCVProcessing():
 
         return contours, thresh
 
+    # draw contours, the boundaries on the image
     def drawContours(self, blur_image, original_image):
         contours, thresh = self.getContours(blur_image)
 
-        if len(contours) > 0:
+        if len(contours) > 0: # Check wheather there are contours were found in image.
 
             c = max(contours, key=cv2.contourArea)
 
-            if cv2.contourArea(c) > 4000:
+            if cv2.contourArea(c) > 4000: # Eliminate the small contours
 
                 M = cv2.moments(c)
 
@@ -73,12 +78,14 @@ class OpenCVProcessing():
         else:
             return original_image, -1
 
+    # Get hough Line
     def getHoughTransformLines(self, blur_image):
         edges = self.getCanny(blur_image)
         lines = cv2.HoughLines(edges, 1, np.pi / 180, 150)  # type: vector
 
         return lines, edges
 
+    # draw hought line on image
     def drawHoughLines(self, blur_image, img):
         lines, edges = self.getHoughTransformLines(blur_image)
         isHorizontalLine = False
@@ -87,14 +94,14 @@ class OpenCVProcessing():
             print 'No hough lines'
             return 0, img, edges, isHorizontalLine, isHoughLines
 
-        avg_theta_vertical = 0.0
+        avg_theta_vertical = 0.0    # THe average angle of the vertical hough lines
         # avg_theta_horizontal = 0.0
-        rotation_direction = 0
-        countVertical = 0.0
+        rotation_direction = 0  # The rotate direction which depends on the vertical hough lines
+        countVertical = 0.0    # record the vertical hough lines
         # countHorizontal = 0.0
 
         for rho, theta in lines[0]:
-
+            # Processing the vertical hough lines
             if theta * 180 / np.pi <= 45 or theta * 180 / np.pi >= 145:
                 if rho >= 0:
                     avg_theta_vertical = avg_theta_vertical + theta * 180 / np.pi
@@ -118,6 +125,8 @@ class OpenCVProcessing():
 
                 cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 print 'V: ' + str(theta * 180 / np.pi)
+                
+            # Processing the horizontal lines
             elif theta * 180 / np.pi >= 80 and theta * 180 / np.pi <= 100:
                 # avg_theta_horizontal = avg_theta_horizontal + theta*180/np.pi
 
@@ -144,6 +153,7 @@ class OpenCVProcessing():
 
         return rotation_direction, img, edges, isHorizontalLine, isHoughLines
 
+    # Extract the blue region of the images
     def getBlueRegion(self):
         hsv = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
         lower_blue = np.array([100, 50, 50])
