@@ -57,7 +57,7 @@ class KeyBoardController():
         self.robot.move(0, 0) # when the key is released, the wheels speed set to 0.
 
     def moveFoward(self):
-        self.robot.move(100, 100) # Set the wheels speed to 100 mm/s
+        self.robot.move(100, 100) # Set the wheels speed to 100 mm/s. The parameter: (right wheel, left wheel)
         self.record()             # Record the distance and the angle of the robot moved
 
     def moveBackward(self):
@@ -65,11 +65,11 @@ class KeyBoardController():
         self.record()               # Record the distance and the angle of the robot moved
 
     def counterclockwiseRotation(self):
-        self.robot.move(20, -20)    # Turn right
+        self.robot.move(20, -20)    # Turn left
         self.record()
 
     def clockwiseRotation(self):
-        self.robot.move(-20, 20)    # Turn left
+        self.robot.move(-20, 20)    # Turn right
         self.record()
 
     # Close the robot
