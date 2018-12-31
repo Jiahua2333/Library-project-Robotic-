@@ -163,6 +163,7 @@ class OpenCVProcessing():
 
         return mask, res
 
+    """
     def getCoordinates(self, distance, angle, direction, xs, ys):
         if direction is "up":
             x, y = self.calCoordinates(90, distance, angle, xs, ys)
@@ -185,8 +186,10 @@ class OpenCVProcessing():
             y = (oneFrameDistance * np.sin(math.radians(oneFrameAngle + adjustNum)) + ys[len(ys) - 1])
 
         return x, y
+    """
 
-
+    
+    
 """
 This is the main function of the library project.
 """
@@ -212,12 +215,14 @@ if __name__ == "__main__":
     for i in range(0, len(list)):
         list[i] = list[i].rstrip('\n')
 
+    """
     plt.xlim(0, 2000)
     plt.ylim(0, 2000)
     plt.xlabel('X')
     plt.ylabel('Y')
     xs = []
     ys = []
+    """
 
     index = 0
     pre_cx = 320
@@ -227,11 +232,13 @@ if __name__ == "__main__":
     pre_right_encoder, pre_left_encoder = robot.getEncoder()
 
     while index < len(list):
-        angle = float(list[index])
+        angle = float(list[index])     
         distance = float(list[index + 1])
 
-        if angle == 0.0:
-            movement = 0
+        if angle == 0.0: # It means the robot should go straight
+            
+            movement = 0 # The holder; could be distance or angle
+            
             while movement < distance:
                 ret, img = video_live.read()
                 openCVProcessing.setIMG(img)
@@ -240,6 +247,8 @@ if __name__ == "__main__":
                 blur = openCVProcessing.blurProcess(gray)
                 frame, cx = openCVProcessing.drawContours(blur, img)
                 rotation_direction, img, edges, isHorizontal, isHoughLines = openCVProcessing.drawHoughLines(blur, img)
+                
+                
                 if isHorizontal and movement >= (0.95*(distance-expectation_distance)):
                     status = 1
                 pre_cx, status = robot.lineFollowing(status, expectation_distance, pre_cx, cx, rotation_direction, small_distance, angle)
