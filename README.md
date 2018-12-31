@@ -29,7 +29,8 @@ Files explaination:
 2. LibraryProject.py
 
   This class is about some openCV image processing. Also, The main function is in this class.
-  Run it for the whole project.
+  
+  Run it to read the data from the file and let the robot move throught this data.
 
 3. Colltrolling.py
 
@@ -38,3 +39,5 @@ Files explaination:
   Attention: when the panel appears on the screen, it must click inside
               one time first(that is nothing), then, it can use the keyboard 
               control the robot.
+              
+ Note: If it needs to read the data, then let robot move, please run Colltrolling.py first to record the angle and distance. Then run the LibraryProject.py. Otherwise, only run the code of LibraryProject.py which is commented at the bottom (Begin at line 381)
