@@ -248,10 +248,13 @@ if __name__ == "__main__":
                 frame, cx = openCVProcessing.drawContours(blur, img)
                 rotation_direction, img, edges, isHorizontal, isHoughLines = openCVProcessing.drawHoughLines(blur, img)
                 
-                
+                # Eliminate the horizontal hough line which is not the corner or node
                 if isHorizontal and movement >= (0.95*(distance-expectation_distance)):
                     status = 1
+                
+                # Let robot move
                 pre_cx, status = robot.lineFollowing(status, expectation_distance, pre_cx, cx, rotation_direction, small_distance, angle)
+                # Calculate the data frame by frame.
                 oneFrameDistance, oneFrameAngle, oneFrameRight, oneFrameLeft, rightEncoder, leftEncoder = robot.getDistanceAngle(pre_right_encoder, pre_left_encoder)
                 pre_left_encoder = leftEncoder
                 pre_right_encoder = rightEncoder
@@ -281,8 +284,9 @@ if __name__ == "__main__":
 
                 cv2.imshow('result', img)
                 cv2.imshow('Edges', edges)
-                plt.plot(xs, ys, 'b')
-                plt.pause(0.01)
+                
+                # plt.plot(xs, ys, 'b')
+                # plt.pause(0.01)
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
@@ -291,7 +295,9 @@ if __name__ == "__main__":
             small_distance = 0
 
         elif angle != 0 and distance == 0:
-            movement = 0
+            
+            movement = 0 # The holder; could be distance or angle
+            
             while abs(movement) < abs(angle):
                 ret, img = video_live.read()
                 openCVProcessing.setIMG(img)
@@ -300,6 +306,9 @@ if __name__ == "__main__":
                 blur = openCVProcessing.blurProcess(gray)
                 frame, cx = openCVProcessing.drawContours(blur, img)
                 rotation_direction, img, edges, isHorizontal, isHoughLines = openCVProcessing.drawHoughLines(blur, img)
+                
+                # In the experiments, we just need 60 degree turn at the node, then the robot can find the line and adjust its position.
+     
                 if angle > 0 and movement < 60:
                     robot.setVR(11)
                     robot.setVL(-11)
@@ -312,6 +321,7 @@ if __name__ == "__main__":
                     robot.lineFollowing(status, expectation_distance, pre_cx, cx, rotation_direction, small_distance, angle)
                     if isHoughLines:
                         break
+                  
                 oneFrameDistance, oneFrameAngle, oneFrameRight, oneFrameLeft, rightEncoder, leftEncoder = robot.getDistanceAngle(pre_right_encoder, pre_left_encoder)
                 pre_left_encoder = leftEncoder
                 pre_right_encoder = rightEncoder
@@ -340,8 +350,8 @@ if __name__ == "__main__":
                     break
                 '''
 
-                plt.plot(xs, ys, 'b')
-                plt.pause(0.01)
+                # plt.plot(xs, ys, 'b')
+                # plt.pause(0.01)
 
                 cv2.imshow('result', img)
                 cv2.imshow('Edges', edges)
